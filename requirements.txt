@@ -1,7 +1,6 @@
 glcontext==2.3.7
 lxml==4.9.2
 moderngl==5.7.4
-moderngl-window==2.4.2
 multipledispatch==0.6.0
 numpy==1.24.1
 Pillow==9.4.0

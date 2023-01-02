@@ -5,8 +5,8 @@ class ShaderProgram:
     def __init__(self, ctx):
         self.ctx = ctx
         self.program = self.get_program(
-            "../resources/shaders/default/default.vert",
-            "../resources/shaders/default/default.frag"
+            (Path(__file__).parent.parent.parent / "resources/shaders/default/default.vert").resolve(),
+            (Path(__file__).parent.parent.parent / "resources/shaders/default/default.frag").resolve()
         )
 
     def get_program(self, v_path: str | Path, f_path: str | Path):

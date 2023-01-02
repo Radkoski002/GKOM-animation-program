@@ -16,7 +16,7 @@ class Light:
         self.right = glm.vec3(1, 0, 0)
         self.forward = glm.vec3(0, 0, -1)
 
-        self.ambient_intensity = 0.1 * self.color
+        self.ambient_intensity = 0.3 * self.color
         self.diffuse_intensity = 0.8 * self.color
         self.specular_intensity = 1.0 * self.color
 

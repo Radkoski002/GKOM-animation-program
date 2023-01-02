@@ -1,12 +1,9 @@
-import pygame as pg
 import moderngl as mgl
-import sys
 
-from src.camera import Camera
-from src.globals import MOVE_MODE_TYPES
-from src.light import Light
-from src.model import Model
-from src.scene import Scene
+from src.moderngl.camera import Camera
+from src.moderngl.light import Light
+from src.moderngl.scene import Scene
+from src.window.window_events import *
 
 
 class Pygame_Window:
@@ -30,7 +27,7 @@ class Pygame_Window:
         self.time = 0
         self.delta_time = 0
 
-        # Create variables
+        # Create option variables
         self.move_mode = MOVE_MODE_TYPES.CAMERA
 
         # Camera
@@ -43,15 +40,13 @@ class Pygame_Window:
     def check_events(self):
         for event in pg.event.get():
             if event.type == pg.KEYDOWN and event.key == pg.K_c:
-                self.move_mode = MOVE_MODE_TYPES.CAMERA
+                change_move_mode_to_camera(self)
 
             if event.type == pg.KEYDOWN and event.key == pg.K_l:
-                self.move_mode = MOVE_MODE_TYPES.LIGHT
+                change_move_mode_to_light(self)
 
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                self.scene.destroy()
-                pg.quit()
-                sys.exit()
+                app_exit(self)
 
     def render(self):
         self.ctx.clear(color=(0.08, 0.16, 0.18, 1))

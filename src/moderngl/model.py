@@ -2,25 +2,34 @@ from pathlib import Path
 
 import glm
 
-from src.shader_program import ShaderProgram
-from src.vbo import ModelVBO
+from src.moderngl.shader_program import ShaderProgram
+from src.moderngl.vbo import ModelVBO
 
 
 class Model:
 
-    def __init__(self, app, position=(0, 0, 0), rotation=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(
+            self,
+            app,
+            path: str | Path,
+            position: tuple[float, float, float] = (0, 0, 0),
+            rotation: tuple[float, float, float] = (0, 0, 0),
+            scale: tuple[float, float, float] = (1, 1, 1)
+    ):
         self.app = app
         self.ctx = app.ctx
-        self.model = None
-        self.program = ShaderProgram(self.ctx).program
+
         self.position = position
         self.rotation = glm.vec3([glm.radians(angle) for angle in rotation])
         self.scale = scale
+
+        self.program = ShaderProgram(self.ctx).program
         self.vbo = ModelVBO(
             self.ctx,
-            (Path(__file__).parent.parent / "resources/models/cube.obj").resolve()
+            path
         )
         self.vao = self.get_vao()
+
         self.camera = self.app.camera
         self.m_model = self.get_model_matrix()
         self.on_init()
@@ -47,6 +56,10 @@ class Model:
         self.program['light.ambient_intensity'].write(self.app.light.ambient_intensity)
         self.program['light.diffuse_intensity'].write(self.app.light.diffuse_intensity)
         self.program['light.specular_intensity'].write(self.app.light.specular_intensity)
+
+        self.program['mat.ambient_color'].write(self.vbo.ambient)
+        self.program['mat.diffuse_color'].write(self.vbo.diffuse)
+        self.program['mat.specular_color'].write(self.vbo.specular)
 
         self.program['m_proj'].write(self.app.camera.m_proj)
         self.program['m_view'].write(self.app.camera.m_view)
