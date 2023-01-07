@@ -18,6 +18,9 @@ class Pygame_Window:
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
         pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
 
+        pg.event.set_grab(True)
+        pg.mouse.set_visible(False)
+
         # Create opengl context
         self.ctx = mgl.create_context()
         self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE)
