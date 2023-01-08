@@ -1,8 +1,8 @@
 import moderngl as mgl
 
-from src.moderngl.camera import Camera
-from src.moderngl.light import Light
-from src.moderngl.scene import Scene
+from src.moderngl_functions.camera import Camera
+from src.moderngl_functions.light import Light
+from src.moderngl_functions.scene import Scene
 from src.window.window_events import *
 
 

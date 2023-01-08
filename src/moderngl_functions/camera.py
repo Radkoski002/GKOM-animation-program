@@ -4,7 +4,7 @@ from src.common import move_element
 from src.globals import MOVE_MODE_TYPES, GLOBAL_VALUES
 import pygame as pg
 
-SENSITIVITY = 0.05
+SENSITIVITY = 0.01
 
 
 class Camera:
@@ -33,13 +33,12 @@ class Camera:
         self.m_view = self.get_view_matrix()
 
     def move(self):
-        if self.app.move_mode == MOVE_MODE_TYPES.CAMERA:
-            move_element(self.position, self.app)
+        # if self.app.move_mode == MOVE_MODE_TYPES.CAMERA:
+        move_element(self.position, self.app)
 
     def rotate(self):
-        rel_x, rel_y = pg.mouse.get_rel()
-        self.rotate_x += rel_x * SENSITIVITY
-        self.rotate_y -= rel_y * SENSITIVITY
+        self.rotate_x += self.app.mouse_coords[0] * SENSITIVITY
+        self.rotate_y -= self.app.mouse_coords[1] * SENSITIVITY
         self.rotate_y = max(-89, min(89, self.rotate_y))
 
     def update_camera_vectors(self):

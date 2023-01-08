@@ -2,8 +2,8 @@ from pathlib import Path
 
 import glm
 
-from src.moderngl.shader_program import ShaderProgram
-from src.moderngl.vbo import ModelVBO
+from src.moderngl_functions.shader_program import ShaderProgram
+from src.moderngl_functions.vbo import ModelVBO
 
 
 class Model:
