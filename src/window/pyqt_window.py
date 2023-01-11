@@ -1,36 +1,34 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QMenu, QAction, QFileDialog
+from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QHBoxLayout, QVBoxLayout, QMainWindow
+from PyQt5.QtCore import QTimer
 
 from src.window.gl_widget import GLWidget
+from src.window.main_widget import MainWidget
 
 
-class PyQtWindow(QtWidgets.QMainWindow):
+class PyQtWindow(QMainWindow):
 
     def __init__(self):
         super(PyQtWindow, self).__init__()
         self.resize(1600, 900)
+        self.main_widget = MainWidget()
 
-        self.gl_widget = GLWidget(self)
-        self.setCentralWidget(self.gl_widget)
+        self.setCentralWidget(self.main_widget)
         self._createActions()
         self._connectActions()
         self._createMenuBar()
-
-        timer = QtCore.QTimer(self)
-        timer.setInterval(20)
-        timer.timeout.connect(self.gl_widget.updateGL)
-        timer.start()
 
     def newFile(self):
         print("new file")
 
     def openFile(self):
         file_name = QFileDialog.getOpenFileName(self, "Open File", __file__, "*.obj")[0]
-        if file_name:
-            self.gl_widget.addObject(file_name)
+        # if file_name:
+        #     self.gl_widget.addObject(file_name)
 
     def saveFile(self):
-        self.gl_widget.renderToImage()
+        pass
+        # self.gl_widget.renderToImage()
 
     def _createActions(self):
         self.newFileAction = QAction("New", self)
@@ -53,8 +51,3 @@ class PyQtWindow(QtWidgets.QMainWindow):
         edit_menu = menu_bar.addMenu("Edit")
         help_menu = menu_bar.addMenu("Help")
 
-    def keyPressEvent(self, a0: QtGui.QKeyEvent) -> None:
-        self.gl_widget.pressed_key = a0.key()
-
-    def keyReleaseEvent(self, a0: QtGui.QKeyEvent) -> None:
-        self.gl_widget.pressed_key = None

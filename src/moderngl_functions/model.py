@@ -51,11 +51,14 @@ class Model:
         self.program['m_view'].write(self.app.camera.m_view)
         self.program['camPos'].write(self.app.camera.position)
         self.program['light.position'].write(self.app.light.position)
+        self.program['light.ambient_intensity'].write(self.app.light.ambient_color)
+        self.program['light.diffuse_intensity'].write(self.app.light.diffuse_color)
+        self.program['light.specular_intensity'].write(self.app.light.specular_color)
 
     def on_init(self):
-        self.program['light.ambient_intensity'].write(self.app.light.ambient_intensity)
-        self.program['light.diffuse_intensity'].write(self.app.light.diffuse_intensity)
-        self.program['light.specular_intensity'].write(self.app.light.specular_intensity)
+        self.program['light.ambient_intensity'].write(self.app.light.ambient_color)
+        self.program['light.diffuse_intensity'].write(self.app.light.diffuse_color)
+        self.program['light.specular_intensity'].write(self.app.light.specular_color)
 
         self.program['mat.ambient_color'].write(self.vbo.ambient)
         self.program['mat.diffuse_color'].write(self.vbo.diffuse)
