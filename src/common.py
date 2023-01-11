@@ -12,7 +12,6 @@ def move_element(position, app):
     pressed_key = app.pressed_key
     if pressed_key == QtCore.Qt.Key_W:
         position += forward * velocity
-        print(position)
     if pressed_key == QtCore.Qt.Key_S:
         position -= forward * velocity
     if pressed_key == QtCore.Qt.Key_D:

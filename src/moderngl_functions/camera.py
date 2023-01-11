@@ -8,7 +8,7 @@ SENSITIVITY = 0.01
 
 
 class Camera:
-    def __init__(self, app, position=(0, 0, 5), rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, app, position=(-4, 5, -4), rot_x=45, rot_y=-45, rot_z=0):
         self.app = app
         self.aspect_ratio = app.WIN_SIZE[0] / app.WIN_SIZE[1]
 

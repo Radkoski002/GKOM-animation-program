@@ -7,6 +7,8 @@ from src.moderngl_functions.light import Light
 from src.moderngl_functions.model import Model
 from src.moderngl_functions.scene import Scene
 
+from PIL import Image
+
 
 class GLWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
@@ -34,6 +36,14 @@ class GLWidget(QtOpenGL.QGLWidget):
     def addObject(self, path):
         self.scene.add_objects(Model(self, path))
 
+    def renderToImage(self):
+        print(self.ctx)
+        fbo = self.ctx.fbo
+        fbo.use()
+        fbo.clear(color=(0.08, 0.16, 0.18, 1))
+        self.scene.render()
+        Image.frombytes("RGB", fbo.size, fbo.read(), "raw", "RGB", 0, -1).show()
+
     def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
         self.pointer_coords = (a0.x(), a0.y())
 
@@ -43,6 +53,9 @@ class GLWidget(QtOpenGL.QGLWidget):
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
         self.mouse_coords = (0, 0)
         self.pointer_coords = (0, 0)
+
+    def scroll(self, dx: int, dy: int) -> None:
+        print(dx, dy)
 
     def initializeGL(self) -> None:
         self.ctx = mgl.create_context()
