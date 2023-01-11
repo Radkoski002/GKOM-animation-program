@@ -1,3 +1,5 @@
+from time import sleep
+
 from PyQt5 import QtOpenGL, QtGui
 import moderngl as mgl
 
@@ -48,7 +50,13 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.pointer_coords = (a0.x(), a0.y())
 
     def mouseMoveEvent(self, a0: QtGui.QMouseEvent) -> None:
-        self.mouse_coords = (a0.x() - self.pointer_coords[0], a0.y() - self.pointer_coords[1])
+        new_coords = ((a0.x() - self.pointer_coords[0]) / 10, (a0.y() - self.pointer_coords[1]) / 10)
+        if abs(new_coords[0]) <= 1 and abs(new_coords[1]) <= 1:
+            self.mouse_coords = (0, 0)
+        else:
+            self.mouse_coords = new_coords
+            print(self.mouse_coords)
+            self.pointer_coords = (a0.x(), a0.y())
 
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
         self.mouse_coords = (0, 0)

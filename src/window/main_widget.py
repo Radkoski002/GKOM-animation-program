@@ -20,49 +20,49 @@ class MainWidget(QWidget):
 
         layout = QVBoxLayout()
 
-        ambient_label = QLabel()
-        ambient_label.setText("Ambient intensity:")
-        layout.addWidget(ambient_label)
-
-        ambient_spin_box = QDoubleSpinBox()
-        ambient_spin_box.setDecimals(2)
-        ambient_spin_box.setRange(0, 1)
-        ambient_spin_box.setSingleStep(0.1)
-        ambient_spin_box.setValue(0.3)
-        ambient_spin_box.valueChanged.connect(self.ambientValueChanged)
-        layout.addWidget(ambient_spin_box)
-
-        diffuse_label = QLabel()
-        diffuse_label.setText("Diffuse intensity:")
-        layout.addWidget(diffuse_label)
-
-        diffuse_spin_box = QDoubleSpinBox()
-        diffuse_spin_box.setDecimals(2)
-        diffuse_spin_box.setRange(0, 1)
-        diffuse_spin_box.setSingleStep(0.1)
-        diffuse_spin_box.setValue(0.8)
-        diffuse_spin_box.valueChanged.connect(self.diffuseValueChanged)
-        layout.addWidget(diffuse_spin_box)
-
-        specular_label = QLabel()
-        specular_label.setText("Specular intensity:")
-        layout.addWidget(specular_label)
-
-        specular_spin_box = QDoubleSpinBox()
-        specular_spin_box.setDecimals(2)
-        specular_spin_box.setRange(0, 1)
-        specular_spin_box.setSingleStep(0.1)
-        specular_spin_box.setValue(1.0)
-        specular_spin_box.valueChanged.connect(self.specularValueChanged)
-        layout.addWidget(specular_spin_box)
+        # ambient_label = QLabel()
+        # ambient_label.setText("Ambient intensity:")
+        # layout.addWidget(ambient_label)
+        #
+        # ambient_spin_box = QDoubleSpinBox()
+        # ambient_spin_box.setDecimals(2)
+        # ambient_spin_box.setRange(0, 1)
+        # ambient_spin_box.setSingleStep(0.1)
+        # ambient_spin_box.setValue(0.3)
+        # ambient_spin_box.valueChanged.connect(self.ambientValueChanged)
+        # layout.addWidget(ambient_spin_box)
+        #
+        # diffuse_label = QLabel()
+        # diffuse_label.setText("Diffuse intensity:")
+        # layout.addWidget(diffuse_label)
+        #
+        # diffuse_spin_box = QDoubleSpinBox()
+        # diffuse_spin_box.setDecimals(2)
+        # diffuse_spin_box.setRange(0, 1)
+        # diffuse_spin_box.setSingleStep(0.1)
+        # diffuse_spin_box.setValue(0.8)
+        # diffuse_spin_box.valueChanged.connect(self.diffuseValueChanged)
+        # layout.addWidget(diffuse_spin_box)
+        #
+        # specular_label = QLabel()
+        # specular_label.setText("Specular intensity:")
+        # layout.addWidget(specular_label)
+        #
+        # specular_spin_box = QDoubleSpinBox()
+        # specular_spin_box.setDecimals(2)
+        # specular_spin_box.setRange(0, 1)
+        # specular_spin_box.setSingleStep(0.1)
+        # specular_spin_box.setValue(1.0)
+        # specular_spin_box.valueChanged.connect(self.specularValueChanged)
+        # layout.addWidget(specular_spin_box)
 
         color_window = QColorDialog()
         color_window.currentColorChanged.connect(self.colorChanged)
         layout.addWidget(color_window)
 
-        self.dupa = QPushButton()
-        self.dupa.clicked.connect(showColorWindow)
-        layout.addWidget(self.dupa)
+        self.color_indicator = QPushButton()
+        self.color_indicator.clicked.connect(showColorWindow)
+        layout.addWidget(self.color_indicator)
 
         mainLayout = QHBoxLayout()
         mainLayout.addLayout(layout, 1)
@@ -85,7 +85,7 @@ class MainWidget(QWidget):
         self.gl_widget.light.changeSpecularValue(value)
 
     def colorChanged(self, color: QColor):
-        self.dupa.setStyleSheet(f"background-color: {color.name()}")
+        self.color_indicator.setStyleSheet(f"background-color: {color.name()}")
         current_color = tuple([tmp_color / 255 for tmp_color in color.getRgb()[:3]])
         self.gl_widget.light.changeColor(current_color)
 

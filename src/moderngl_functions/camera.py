@@ -1,10 +1,9 @@
 import glm
 
 from src.common import move_element
-from src.globals import MOVE_MODE_TYPES, GLOBAL_VALUES
-import pygame as pg
+from src.globals import GLOBAL_VALUES
 
-SENSITIVITY = 0.01
+SENSITIVITY = 0.5
 
 
 class Camera:
@@ -33,8 +32,7 @@ class Camera:
         self.m_view = self.get_view_matrix()
 
     def move(self):
-        # if self.app.move_mode == MOVE_MODE_TYPES.CAMERA:
-        move_element(self.position, self.app)
+        move_element(self, self.app)
 
     def rotate(self):
         self.rotate_x += self.app.mouse_coords[0] * SENSITIVITY

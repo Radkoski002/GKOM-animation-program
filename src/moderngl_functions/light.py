@@ -10,6 +10,7 @@ class Light:
         self.ambient_color = None
         self.diffuse_color = None
         self.specular_color = None
+
         self.app = app
 
         self.position = glm.vec3(position)
