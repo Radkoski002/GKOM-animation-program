@@ -9,6 +9,3 @@ if __name__ == "__main__":
     win.show()
 
     sys.exit(app.exec())
-
-    # new_window = Pygame_Window()
-    # new_window.run()

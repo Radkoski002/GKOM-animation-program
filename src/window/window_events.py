@@ -14,5 +14,4 @@ def change_move_mode_to_light(app):
 
 def app_exit(app):
     app.scene.destroy()
-    pg.quit()
     sys.exit()

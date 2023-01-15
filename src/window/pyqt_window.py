@@ -23,22 +23,21 @@ class PyQtWindow(QMainWindow):
 
     def openFile(self):
         file_name = QFileDialog.getOpenFileName(self, "Open File", __file__, "*.obj")[0]
-        # if file_name:
-        #     self.gl_widget.addObject(file_name)
+        if file_name:
+            self.main_widget.gl_widget.addObject(file_name)
 
-    def saveFile(self):
-        pass
-        # self.gl_widget.renderToImage()
+    def renderAnimation(self):
+        self.main_widget.gl_widget.renderToImage()
 
     def _createActions(self):
         self.newFileAction = QAction("New", self)
         self.openFileAction = QAction("Open", self)
-        self.saveFileAction = QAction("Save", self)
+        self.renderAnimationAction = QAction("Render", self)
 
     def _connectActions(self):
         self.newFileAction.triggered.connect(self.newFile)
         self.openFileAction.triggered.connect(self.openFile)
-        self.saveFileAction.triggered.connect(self.saveFile)
+        self.renderAnimationAction.triggered.connect(self.renderAnimation)
 
     def _createMenuBar(self):
         menu_bar = self.menuBar()
@@ -47,7 +46,7 @@ class PyQtWindow(QMainWindow):
         menu_bar.addMenu(file_menu)
         file_menu.addAction(self.newFileAction)
         file_menu.addAction(self.openFileAction)
-        file_menu.addAction(self.saveFileAction)
+        file_menu.addAction(self.renderAnimationAction)
         edit_menu = menu_bar.addMenu("Edit")
         help_menu = menu_bar.addMenu("Help")
 

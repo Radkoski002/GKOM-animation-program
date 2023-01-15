@@ -50,6 +50,7 @@ class Model:
         self.program['m_model'].write(self.m_model)
         self.program['m_view'].write(self.app.camera.m_view)
         self.program['camPos'].write(self.app.camera.position)
+
         self.program['light.position'].write(self.app.light.position)
         self.program['light.ambient_intensity'].write(self.app.light.ambient_color)
         self.program['light.diffuse_intensity'].write(self.app.light.diffuse_color)
@@ -75,6 +76,16 @@ class Model:
     def render(self):
         self.update()
         self.vao.render()
+
+    def update_model_matrix(self, new_position=None, new_rotation=None, new_scale=None):
+        if new_position:
+            self.position = new_position
+        if new_rotation:
+            self.rotation = glm.vec3([glm.radians(angle) for angle in new_rotation])
+        if new_scale:
+            self.scale = new_scale
+
+        self.m_model = self.get_model_matrix()
 
     def destroy(self):
         self.program.release()

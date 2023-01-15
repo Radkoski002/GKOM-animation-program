@@ -16,8 +16,8 @@ class Scene:
 
     def load(self):
         pass
-        self.add_objects(Model(self.app, PATH))
-        # self.add_objects(Model(self.app, PATH, position=(-5, 0, 0), rotation=(45, 0, 0), scale=(1.5, 1, 1.5)))
+        # self.add_objects(Model(self.app, PATH))
+        self.add_objects(Model(self.app, PATH, position=(-5, 0, 0), rotation=(45, 0, 0), scale=(1.5, 1, 1.5)))
         # self.add_objects(Model(self.app, PATH, position=(5, 0, 0), rotation=(0, 45, 0)))
 
     def render(self):
