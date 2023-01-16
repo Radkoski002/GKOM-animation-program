@@ -20,7 +20,8 @@ class Model:
         self.ctx = app.ctx
 
         self.position = position
-        self.rotation = glm.vec3([glm.radians(angle) for angle in rotation])
+        self.rotation_angles = rotation
+        self.rotation = glm.vec3([glm.radians(angle) for angle in self.rotation_angles])
         self.scale = scale
 
         self.program = ShaderProgram(self.ctx).program
@@ -81,7 +82,8 @@ class Model:
         if new_position:
             self.position = new_position
         if new_rotation:
-            self.rotation = glm.vec3([glm.radians(angle) for angle in new_rotation])
+            self.rotation_angles = new_rotation
+            self.rotation = glm.vec3([glm.radians(angle) for angle in self.rotation_angles])
         if new_scale:
             self.scale = new_scale
 

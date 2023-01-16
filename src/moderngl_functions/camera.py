@@ -7,7 +7,7 @@ SENSITIVITY = 0.5
 
 
 class Camera:
-    def __init__(self, app, position=(-4, 5, -4), rot_x=45, rot_y=-45, rot_z=0):
+    def __init__(self, app, position=(-4, 5, -4), rotation=(45, -45, 0)):
         self.app = app
         self.aspect_ratio = app.WIN_SIZE[0] / app.WIN_SIZE[1]
 
@@ -17,9 +17,8 @@ class Camera:
         self.right = glm.vec3(1, 0, 0)
         self.forward = glm.vec3(0, 0, -1)
 
-        self.rotate_x = rot_x
-        self.rotate_y = rot_y
-        self.rotate_z = rot_z
+        self.rotation = rotation
+        self.rotate_x, self.rotate_y, self.rotate_z = rotation
 
         self.m_view = self.get_view_matrix()
 
@@ -38,6 +37,14 @@ class Camera:
         self.rotate_x += self.app.mouse_coords[0] * SENSITIVITY
         self.rotate_y -= self.app.mouse_coords[1] * SENSITIVITY
         self.rotate_y = max(-89, min(89, self.rotate_y))
+
+    def updateCamera(self, new_position=None, new_rotation=None):
+        if new_position:
+            self.position = glm.vec3(new_position)
+        if new_rotation:
+            self.rotation = new_rotation
+            self.rotate_x, self.rotate_y, self.rotate_z = new_rotation
+        self.update()
 
     def update_camera_vectors(self):
         yaw, pitch = glm.radians(self.rotate_x), glm.radians(self.rotate_y)

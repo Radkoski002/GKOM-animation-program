@@ -20,29 +20,37 @@ class Light:
         self.diffuse_intensity = 0.8
         self.specular_intensity = 1.0
 
-        self.updateLight()
+        self.update()
 
     def move(self):
         if self.app.move_mode == MOVE_MODE_TYPES.LIGHT:
             move_element(self.position, self.app)
 
+    def updateLight(self, new_position=None, new_color=None):
+        if new_position:
+            self.position = glm.vec3(new_position)
+        if new_color:
+            self.color = glm.vec3(new_color)
+
+        self.update()
+
     def changeColor(self, color):
         self.color = glm.vec3(color)
-        self.updateLight()
+        self.update()
 
     def changeAmbientValue(self, value: float):
         self.ambient_intensity = value
-        self.updateLight()
+        self.update()
 
     def changeDiffuseValue(self, value: float):
         self.diffuse_intensity = value
-        self.updateLight()
+        self.update()
 
     def changeSpecularValue(self, value: float):
         self.specular_intensity = value
-        self.updateLight()
+        self.update()
 
-    def updateLight(self):
+    def update(self):
         self.ambient_color = self.ambient_intensity * self.color
         self.diffuse_color = self.diffuse_intensity * self.color
         self.specular_color = self.specular_intensity * self.color

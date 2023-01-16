@@ -2,7 +2,7 @@ import moderngl as mgl
 import cv2
 import numpy as np
 
-from src.globals import MOVE_MODE_TYPES
+from src.globals import MOVE_MODE_TYPES, GLOBAL_VALUES
 from src.moderngl_functions.camera import Camera
 from src.moderngl_functions.light import Light
 from src.moderngl_functions.model import Model
@@ -10,33 +10,6 @@ from src.moderngl_functions.scene import Scene
 
 from PIL import Image
 from PyQt5 import QtOpenGL, QtGui
-
-test_frames = [
-    {
-        "frame": 0,
-        "position": (0, 0, 0),
-        "scale": (1, 1, 1),
-        "rotation": (0, 0, 0)
-    },
-    {
-        "frame": 1,
-        "position": (1, 0, 0),
-        "scale": (1, 1, 1),
-        "rotation": (0, 0, 0)
-    },
-    {
-        "frame": 2,
-        "position": (1, 0, 0),
-        "scale": (2, 2, 2),
-        "rotation": (0, 0, 0),
-    },
-    {
-        "frame": 3,
-        "position": (1, 0, 0),
-        "scale": (2, 2, 2),
-        "rotation": (45, 0, 0),
-    },
-]
 
 
 def calculate_new_vector_linear(old_vector, new_vector, frame, frames):
@@ -73,38 +46,81 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         self.move_mode = MOVE_MODE_TYPES.CAMERA
 
+        self.current_frame = 0
+        self.frame_numbers = [0]
+        self.frames = [
+            {
+                "frame": 0,
+                "position": (0, 0, 0),
+                "scale": (1, 1, 1),
+                "rotation": (0, 0, 0)
+            }
+        ]
+        self.rednerType = 0
+
     def addObject(self, path):
         self.scene.add_objects(Model(self, path))
 
-    def update_frame(self, src_frame, dst_frame, current_frame, frames_count):
-        old_position = src_frame["position"] if "position" in src_frame else None
-        new_position = dst_frame["position"] if "position" in dst_frame else None
-        old_rotation = src_frame["rotation"] if "rotation" in src_frame else None
-        new_rotation = dst_frame["rotation"] if "rotation" in dst_frame else None
-        old_scale = src_frame["scale"] if "scale" in src_frame else None
-        new_scale = dst_frame["scale"] if "scale" in dst_frame else None
-        current_position = calculate_new_vector_linear(old_position, new_position, current_frame, frames_count) \
-            if old_position and new_position else None
-        current_rotation = calculate_new_vector_linear(old_rotation, new_rotation, current_frame, frames_count) \
-            if old_rotation and new_rotation else None
-        current_scale = calculate_new_vector_linear(old_scale, new_scale, current_frame, frames_count) \
-            if old_scale and new_scale else None
-        self.scene.objects[0].update_model_matrix(current_position, current_rotation, current_scale)
-        pass
+    def changeFrame(self, frame):
+        self.current_frame = frame
 
-    def renderToImage(self):
-        frame_rate = 24
+    def addFrame(self):
+        if self.current_frame not in self.frame_numbers:
+            self.frame_numbers.append(self.current_frame)
+            self.frames.append({
+                "frame": self.current_frame,
+                "position": self.scene.objects[0].position,
+                "scale": self.scene.objects[0].scale,
+                "rotation": self.scene.objects[0].rotation_angles,
+            })
+            self.frames = sorted(self.frames, key=lambda x: x["frame"])
+            self.frame_numbers.sort()
+        else:
+            index = self.frame_numbers.index(self.current_frame)
+            self.frames[index] = {
+                "frame": self.current_frame,
+                "position": self.scene.objects[0].position,
+                "scale": self.scene.objects[0].scale,
+                "rotation": self.scene.objects[0].rotation_angles,
+            }
+
+    def changeRenderType(self, render_type):
+        self.rednerType = render_type
+
+    def update_frame(self, src_frame, dst_frame, current_frame, frames_count):
+
+        old_position = src_frame["position"]
+        new_position = dst_frame["position"]
+        old_rotation = src_frame["rotation"]
+        new_rotation = dst_frame["rotation"]
+        old_scale = src_frame["scale"]
+        new_scale = dst_frame["scale"]
+
+        if self.rednerType == 2:
+            current_position = calculate_new_vector_linear(old_position, new_position, current_frame, frames_count)
+            current_rotation = calculate_new_vector_linear(old_rotation, new_rotation, current_frame, frames_count)
+            current_scale = calculate_new_vector_linear(old_scale, new_scale, current_frame, frames_count)
+            self.scene.objects[0].update_model_matrix(current_position, current_rotation, current_scale)
+        else:
+            self.scene.objects[0].update_model_matrix(new_position, new_rotation, new_scale)
+
+    def renderToFilm(self):
         resolution = (800, 450)
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter("test.mp4", fourcc, frame_rate, resolution)
+        out = cv2.VideoWriter("test.mp4", fourcc, GLOBAL_VALUES.FRAME_RATE, resolution)
 
         fbo = self.ctx.simple_framebuffer(resolution)
         fbo.use()
 
-        for index, frame in enumerate(test_frames[1:]):
-            frames_count = (frame["frame"] - test_frames[index]["frame"]) * frame_rate
-            src_frame = test_frames[index]
+        if self.rednerType == 0:
+            self.frames.append(self.frames[-1])
+            self.frames[-1]["frame"] += 1
+
+        for index, frame in enumerate(self.frames[1:]):
+            frames_count = ((frame["frame"] - self.frames[index]["frame"]) * GLOBAL_VALUES.FRAME_RATE) \
+                           // GLOBAL_VALUES.KEY_FRAMES_PER_SECOND
+            src_frame = self.frames[index]
             dst_frame = frame
             for i in range(frames_count):
                 fbo.clear(color=(0.08, 0.16, 0.18, 1))
@@ -112,9 +128,11 @@ class GLWidget(QtOpenGL.QGLWidget):
                 self.scene.render()
                 image = Image.frombytes("RGB", fbo.size, fbo.read(), "raw", "RGB", 0, -1)
                 out.write(np.array(image))
+
         out.release()
         fbo.release()
         self.ctx.viewport = (0, 0, self.width(), self.height())
+        self.ctx.clear(color=(0.08, 0.16, 0.18, 1))
 
     def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
         self.pointer_coords = (a0.x(), a0.y())

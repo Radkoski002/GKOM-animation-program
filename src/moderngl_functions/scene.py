@@ -2,7 +2,7 @@ from src.moderngl_functions.model import *
 
 PATH = (Path(
     __file__
-).parent.parent.parent / "resources/models/cube.obj").resolve()
+).parent.parent.parent / "resources/models/monkey.obj").resolve()
 
 
 class Scene:
@@ -12,13 +12,10 @@ class Scene:
         self.load()
 
     def add_objects(self, obj):
-        self.objects.append(obj)
+        self.objects = [obj]
 
     def load(self):
-        pass
-        # self.add_objects(Model(self.app, PATH))
-        self.add_objects(Model(self.app, PATH, position=(-5, 0, 0), rotation=(45, 0, 0), scale=(1.5, 1, 1.5)))
-        # self.add_objects(Model(self.app, PATH, position=(5, 0, 0), rotation=(0, 45, 0)))
+        self.add_objects(Model(self.app, PATH))
 
     def render(self):
         for obj in self.objects:

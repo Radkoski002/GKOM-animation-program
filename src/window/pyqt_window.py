@@ -27,7 +27,7 @@ class PyQtWindow(QMainWindow):
             self.main_widget.gl_widget.addObject(file_name)
 
     def renderAnimation(self):
-        self.main_widget.gl_widget.renderToImage()
+        self.main_widget.gl_widget.renderToFilm()
 
     def _createActions(self):
         self.newFileAction = QAction("New", self)

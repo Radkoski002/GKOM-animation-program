@@ -13,4 +13,6 @@ class GLOBAL_VALUES(Prodict):
     FOV = 50
     NEAR = 0.1
     FAR = 100
+    FRAME_RATE = 24
+    KEY_FRAMES_PER_SECOND = 2
 
