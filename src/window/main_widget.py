@@ -7,10 +7,6 @@ from src.window.gl_widget import GLWidget
 from src.window.popup_widget import PopupWidget
 
 
-def showColorWindow():
-    window = PopupWidget(QColorDialog())
-    window.show()
-
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -30,7 +26,10 @@ class MainWidget(QWidget):
             "scale_z": self.scaleZChanged,
             "ambient": self.ambientValueChanged,
             "diffuse": self.diffuseValueChanged,
-            "specular": self.specularValueChanged
+            "specular": self.specularValueChanged,
+            "light_pos_x": self.lightPosXChanged,
+            "light_pos_y": self.lightPosYChanged,
+            "light_pos_z": self.lightPosZChanged,
         }
 
         self.spin_boxes = {}
@@ -94,12 +93,32 @@ class MainWidget(QWidget):
                 label,
                 element_scale_layout,
                 decimals=2,
-                value_range=(0.01, 10),
+                value_range=(0.01, 100),
                 step=1,
                 initial_value=1,
             )
 
         layout.addLayout(element_scale_layout)
+
+        # init light position layout
+
+        light_position_layout = QHBoxLayout()
+
+        for key, label, init_value in [
+            ("light_pos_x", "Light X:", 3),
+            ("light_pos_y", "Light Y:", 3),
+            ("light_pos_z", "Light Z:", -3),
+        ]:
+            self.createSpinBoxWithLabel(
+                key,
+                label,
+                light_position_layout,
+                decimals=1,
+                value_range=(-100, 100),
+                step=0.1,
+                initial_value=init_value,
+            )
+        layout.addLayout(light_position_layout)
 
         # init light values layout
 
@@ -126,10 +145,9 @@ class MainWidget(QWidget):
         color_window.currentColorChanged.connect(self.colorChanged)
         layout.addWidget(color_window)
 
-        # init color indicator
-        self.color_indicator = QPushButton()
-        self.color_indicator.clicked.connect(showColorWindow)
-        layout.addWidget(self.color_indicator)
+        # init camera move button
+        camera_move_button = QPushButton("Move camera")
+        layout.addWidget(camera_move_button)
 
         # init frame change widgets
         frames_layout = QHBoxLayout()
@@ -198,7 +216,6 @@ class MainWidget(QWidget):
         self.gl_widget.light.changeSpecularValue(value)
 
     def colorChanged(self, color: QColor):
-        self.color_indicator.setStyleSheet(f"background-color: {color.name()}")
         current_color = tuple([tmp_color / 255 for tmp_color in color.getRgb()[:3]])
         self.gl_widget.light.changeColor(current_color)
 
@@ -276,6 +293,18 @@ class MainWidget(QWidget):
     def scaleZChanged(self, value):
         scaleX, scaleY, scaleZ = self.gl_widget.scene.objects[0].scale
         self.gl_widget.scene.objects[0].update_model_matrix(new_scale=(scaleX, scaleY, value))
+
+    def lightPosXChanged(self, value):
+        curX, curY, curZ = self.gl_widget.light.position
+        self.gl_widget.light.updateLight(new_position=(value, curY, curZ))
+
+    def lightPosYChanged(self, value):
+        curX, curY, curZ = self.gl_widget.light.position
+        self.gl_widget.light.updateLight(new_position=(curX, value, curZ))
+
+    def lightPosZChanged(self, value):
+        curX, curY, curZ = self.gl_widget.light.position
+        self.gl_widget.light.updateLight(new_position=(curX, curY, value))
 
     def keyPressEvent(self, a0: QKeyEvent) -> None:
         self.gl_widget.pressed_key = a0.key()

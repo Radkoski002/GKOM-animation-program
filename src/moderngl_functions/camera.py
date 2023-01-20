@@ -3,7 +3,7 @@ import glm
 from src.common import move_element
 from src.globals import GLOBAL_VALUES
 
-SENSITIVITY = 0.5
+SENSITIVITY = 1
 
 
 class Camera:

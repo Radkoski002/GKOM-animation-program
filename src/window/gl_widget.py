@@ -113,10 +113,6 @@ class GLWidget(QtOpenGL.QGLWidget):
         fbo = self.ctx.simple_framebuffer(resolution)
         fbo.use()
 
-        if self.rednerType == 0:
-            self.frames.append(self.frames[-1])
-            self.frames[-1]["frame"] += 1
-
         for index, frame in enumerate(self.frames[1:]):
             frames_count = ((frame["frame"] - self.frames[index]["frame"]) * GLOBAL_VALUES.FRAME_RATE) \
                            // GLOBAL_VALUES.KEY_FRAMES_PER_SECOND
@@ -127,6 +123,7 @@ class GLWidget(QtOpenGL.QGLWidget):
                 self.update_frame(src_frame, dst_frame, i, frames_count)
                 self.scene.render()
                 image = Image.frombytes("RGB", fbo.size, fbo.read(), "raw", "RGB", 0, -1)
+                image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
                 out.write(np.array(image))
 
         out.release()
